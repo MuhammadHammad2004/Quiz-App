@@ -1,122 +1,80 @@
-var quizContainer = document.getElementById("seconde-container");
-var questionData = [
+var questionElement = document.getElementById("question");
+var optionsElement = document.getElementById("options");
+var submitButton = document.getElementById("submitButton");
+var resultElement = document.getElementById("result");
+
+var quizData = [
   {
-    question: "What is Your Name?",
-    option: ["Hammad", "Usaid", "Hamza", "Fatima"],
-    answer: "Hammad",
-    marks: 0,
+    question: "What is the capital Of Pakistan?",
+    options: ["Lahore", "Karachi", "Islamabad", "Balochistan"],
+    correct: "Islamabad",
   },
   {
-    question: "What is Father Name?",
-    option: ["Hammad", "Usaid", "Hamza", "Fatima"],
-    answer: "Siddiq",
-    marks: 0,
+    question: "What is 2 + 8 - 6?",
+    options: ["3", "4", "5", "6"],
+    correct: "4",
   },
+
   {
-    question: "What is Father Name?",
-    option: ["Hammad", "Usaid", "Hamza", "Fatima"],
-    answer: "Siddiq",
-    marks: 0,
+    question: "What is the square  of 8?",
+    options: ["66", "78", "65", "64"],
+    correct: "8",
   },
 ];
 
-onchange = "userOptHandler()";
+var currentQuestionIndex = 0;
+var score = 0;
 
-for (var i = 0; i < questionData.length; i++) {
-  quizContainer.innerHTML += `
-    <h2>${questionData[i].question}</h2>
-    </br>
-    <input name="answer${i + 1}" type="radio" id="answer${
-    i + 1
-  }_opt1" onchange="userOptHandler('${questionData[i].option[0]}','${
-    questionData[i].answer
-  }',${i})">
-  <label for="answer${i + 1}_opt1">${questionData[i].option[0]}</label>
-        <br>
-          <input name="answer${i + 1}" type="radio" id="answer${
-    i + 1
-  }_opt2" onchange="userOptHandler('${questionData[i].option[1]}','${
-    questionData[i].answer
-  }',${i})">
-  <label for="answer${i + 1}_opt1">${questionData[i].option[1]}</label>
-        <br>  <input name="answer${i + 1}" type="radio" id="answer${
-    i + 1
-  }_opt1" onchange="userOptHandler('${questionData[i].option[2]}','${
-    questionData[i].answer
-  }',${i})">
-  <label for="answer${i + 1}_opt1">${questionData[i].option[2]}</label>
-        <br>  <input name="answer${i + 1}" type="radio" id="answer${
-    i + 1
-  }_opt1" onchange="userOptHandler('${questionData[i].option[3]}','${
-    questionData[i].answer
-  }',${i})">
-  <label for="answer${i + 1}_opt1">${questionData[i].option[3]}</label>
-        <br>
-    `;
+function loadQuestion() {
+  var currentQuestion = quizData[currentQuestionIndex];
+  questionElement.textContent = currentQuestion.question;
+  optionsElement.innerHTML = "";
+  currentQuestion.options.forEach((option) => {
+    var optionElement = document.createElement("div");
+    optionElement.innerHTML = `
+              <label>
+                  <input type="radio" name="option" value="${option}">
+                  ${option}
+              </label>
+          `;
+    optionsElement.appendChild(optionElement);
+  });
 }
 
-var userOptHandler = (user_opt, correct_opt, index) => {
-  console.log(user_opt);
-  console.log(correct_opt);
-  console.log(index);
-  if (user_opt === correct_opt) {
-    questionData[index].marks = 1;
+function checkAnswer() {
+  var selectedOption = document.querySelector('input[name="option"]:checked');
+  if (!selectedOption) {
+    alert("Please select an option!");
+    return;
+  }
+
+  var answer = selectedOption.value;
+  var correctAnswer = quizData[currentQuestionIndex].correct;
+
+  if (answer === correctAnswer) {
+    score++;
+    resultElement.textContent = "Correct!";
+    resultElement.style.color = "green";
   } else {
-    questionData[index].marks = 0;
-  }
-  console.log(questionData[index].marks);
-};
-
-var submitHandler = () => {
-  // alert('submitted')
-  var totMarks = 0;
-  for (var i = 0; i < questionData.length; i++) {
-    console.log(questionData[i].marks);
-    if (questionData[i].marks === 1) {
-      totMarks++;
-    }
+    resultElement.textContent = `Wrong! The correct answer was: ${correctAnswer}`;
+    resultElement.style.color = "red";
   }
 
-  console.log("totMarks==> ", totMarks);
-  quizContainer.innerHTML = `<h2>Score: ${totMarks} </h2>`;
-};
+  currentQuestionIndex++;
 
-// let currentIndex = 0;
+  if (currentQuestionIndex < quizData.length) {
+    setTimeout(() => {
+      resultElement.textContent = "";
+      loadQuestion();
+    }, 1000);
+  } else {
+    setTimeout(() => {
+      resultElement.textContent = `Quiz completed! Your score is ${score} out of ${quizData.length}.`;
+      submitButton.disabled = true;
+    }, 1000);
+  }
+}
 
-// function nextQuestion() {
-//   const questions = document.querySelectorAll("quizContainer");
-//   questions[currentIndex].classList.remove("active");
-//   currentIndex++;
-//   if (currentIndex < questions.length) {
-//     questions[currentIndex].classList.add("active");
-//   }
-// }
+submitButton.addEventListener("click", checkAnswer);
 
-// //  <script>
-//       // Questions array
-//       const questions = [
-//         "What is the capital of France?",
-//         "What is 2 + 2?",
-//         "Who wrote 'To Kill a Mockingbird'?",
-//         "What is the square root of 64?",
-//       ];
-
-//       let currentQuestionIndex = 0;
-
-//       // Display the first question
-//       const questionElement = document.getElementById("question");
-//       questionElement.textContent = questions[currentQuestionIndex];
-
-//       // Next button event listener
-//       document.getElementById("nextButton").addEventListener("click", () => {
-//         currentQuestionIndex++;
-
-//         // Check if there are more questions
-//         if (currentQuestionIndex < questions.length) {
-//           questionElement.textContent = questions[currentQuestionIndex];
-//         } else {
-//           questionElement.textContent = "Quiz Completed!";
-//           document.getElementById("nextButton").disabled = true; // Disable the button
-//         }
-//       });
-//     // </script>
+loadQuestion();
