@@ -55,17 +55,6 @@ for (var i = 0; i < questionData.length; i++) {
     `;
 }
 
-let currentIndex = 0;
-
-function nextQuestion() {
-  const questions = document.querySelectorAll("quizContainer");
-  questions[currentIndex].classList.remove("active");
-  currentIndex++;
-  if (currentIndex < questions.length) {
-    questions[currentIndex].classList.add("active");
-  }
-}
-
 var userOptHandler = (user_opt, correct_opt, index) => {
   console.log(user_opt);
   console.log(correct_opt);
